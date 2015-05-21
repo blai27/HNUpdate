@@ -1,0 +1,8 @@
+{
+  "name": "HNUpdate",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "^4.12.3",
+    "mongodb": "^2.0.32"
+  }
+}

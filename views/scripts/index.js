@@ -1,0 +1,22 @@
+(function(){
+  "use strict";
+
+  $('#getMaxID').click(function() {
+    $.ajax({
+      url: '/Stats',
+      type: 'GET',
+      dataType: 'json',
+      timeout: 5000,
+      comeplete: function() {
+        console.log('completed');
+      },
+      success: function(data) {
+        console.log(data);
+      },
+      error: function(err) {
+        console.log('reep');
+      }
+    });
+  });
+
+})();
