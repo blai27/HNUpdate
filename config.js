@@ -4,7 +4,7 @@ var config = {};
 config.crawler = {};
 
 // 5 minutes of re-crawl timer
-config.crawler.timer = 10000000000;
+config.crawler.timer = 100000;
 
 config.HN = {};
 

@@ -1,7 +1,6 @@
 var mongoClient = require('mongodb').MongoClient;
 var HNPosts = {};
 var db_url = 'mongodb://localhost:27017/hn-posts';
-var stats_url = 'mongodb://localhost:27017/hn-posts-stats'
 
 function insertPostBatch(db, batch, callback) {
 
@@ -29,7 +28,11 @@ function insertPostBatch(db, batch, callback) {
 function getRange(db, callback) {
   var collection = db.collection('hn-posts-stats');
   collection.find().toArray(function(err, docs) {
-    console.log(docs);
+    var range = null;
+    if (docs.length > 0) {
+      range = docs[0];
+    }
+    callback(err, range);
   });
 }
 
@@ -73,19 +76,19 @@ HNPosts.createBatch = function(batch, fn) {
 }
 
 HNPosts.getIndexRange = function(fn) {
-  mongoClient.connect(stats_url, function(err, db) {
+  mongoClient.connect(db_url, function(err, db) {
     if (err !== null) {
       fn(err, null);
     }
     getRange(db, function(error, result) {
-      console.log(result);
+      fn(error, result);
       db.close();
     });
   });
 }
 
 HNPosts.updateIndexRange = function(range, fn) {
-  mongoClient.connect(stats_url, function(err, db) {
+  mongoClient.connect(db_url, function(err, db) {
     console.log('range connected');
     updateRange(db, range, function(err, result) {
       db.close();

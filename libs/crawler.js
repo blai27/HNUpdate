@@ -25,20 +25,22 @@ crawler.reset = function() {
 crawler.start = function(fn) {
   var that = this;
   console.log('Crawler started.');
-  hnapi.getMaxItem(function(id_string) {
-    var id = parseInt(id_string, 10);
-    if (that.lastMax === undefined) {
-      that.lastMax = id;
-    }
-    that.batch.max = id;
-    if (that.lastMax === id) {
-      that.batch.min = id;
-    } else {
-      that.batch.min = that.lastMax + 1;
-    }
-    that.crawl(id, function() {
-      that.lastMax = id;
-      fn();
+  model.getIndexRange(function(err, range) {
+    hnapi.getMaxItem(function(id_string) {
+      var id = parseInt(id_string, 10);
+      if (that.lastMax === undefined) {
+        that.lastMax = range.max;
+      }
+      that.batch.max = id;
+      if (that.lastMax === id) {
+        that.batch.min = id;
+      } else {
+        that.batch.min = that.lastMax + 1;
+      }
+      that.crawl(id, function() {
+        that.lastMax = id;
+        fn();
+      });
     });
   });
 }
