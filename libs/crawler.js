@@ -5,6 +5,8 @@ var crawler = {};
 
 crawler.init = function(config) {
   this.timer = config.timer;
+  this.limit = config.limit;
+  this.startTime = new Date();
   this.reset();
 }
 
@@ -20,11 +22,14 @@ crawler.reset = function() {
   this.batch.shows = 0;
   this.batch.jobs = 0;
   this.batch.comments = 0;
+  this.startTime = new Date();
+  this.batch.currentMin = null;
 }
 
 crawler.start = function(fn) {
   var that = this;
   console.log('Crawler started.');
+  this.startTime = new Date();
   model.getIndexRange(function(err, range) {
     hnapi.getMaxItem(function(id_string) {
       var id = parseInt(id_string, 10);
@@ -51,21 +56,29 @@ crawler.crawl = function(id, fn) {
     hnapi.getItem(id, function(data){
       console.log("Retrieved post: " + id);
       var result = JSON.parse(data);
+      that.batch.currentMin = id;
       that.parse(result, id);
-      setTimeout(function() {
-        that.crawl(id-1, fn);
-      }, 1000);
+      var creation = new Date(result['time'] * 1000);
+      var startTime = new Date(that.startTime.getTime() - that.limit);
+      if (startTime > creation) {
+        that.crawl(that.lastMax, fn);
+      } else {
+        setTimeout(function() {
+          that.crawl(id-1, fn);
+        }, 1000);
+      }
     });
   } else {
     console.log("Crawler completed");
     if (that.batch.posts.length > 0) {
+      that.batch.min = that.batch.currentMin;
       model.createBatch(that.batch, function() {
         console.log('batch created');
         var range = {};
         range.max = that.batch.max;
         range.min = that.batch.min;
         model.updateIndexRange(range, function() {
-          console.log('WUT');
+
         });
       });
     }
@@ -80,14 +93,10 @@ crawler.parse = function(item, id) {
     return;
   }
 
-  if (this.batch.max === id && this.batch.min === id) {
-    this.batch.maxtime = item['time'];
-    this.batch.mintime = item['time'];
-  } else if (this.batch.min === id) {
-    this.batch.mintime = item['time'];
-  } else if (this.batch.max === id) {
+  if (this.batch.max === id) {
     this.batch.maxtime = item['time'];
   }
+  this.batch.mintime = item['item'];
 
   if (item['type'] === 'story') {
     if (item['title'] !== undefined) {

@@ -54,9 +54,13 @@ function updateRange(db, range, callback) {
         range_stored.min = range.min;
       }
       collection.remove({}, function(err, result) {
-        collection.insert(range_stored, function(err, result) {
-          console.log('range updated');
-        });
+        if (err === null) {
+          collection.insert(range_stored, function(err, result) {
+            callback(err, result);
+          });
+        } else {
+          callback(err, result);
+        }
       });
     }
   });
@@ -81,8 +85,8 @@ HNPosts.getIndexRange = function(fn) {
       fn(err, null);
     }
     getRange(db, function(error, result) {
-      fn(error, result);
       db.close();
+      fn(error, result);
     });
   });
 }
@@ -92,6 +96,7 @@ HNPosts.updateIndexRange = function(range, fn) {
     console.log('range connected');
     updateRange(db, range, function(err, result) {
       db.close();
+      fn(err, result);
     });
   });
 }

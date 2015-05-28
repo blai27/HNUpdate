@@ -16,8 +16,4 @@ background.start = function() {
   });
 }
 
-background.stats = function() {
-  return crawler.stats;
-}
-
 module.exports = background;
