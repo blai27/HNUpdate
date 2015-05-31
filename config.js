@@ -3,9 +3,9 @@ var config = {};
 // Crawler default settings
 config.crawler = {};
 
-// 5 minutes of re-crawl timer
-config.crawler.timer = 100000;
-config.crawler.limit = 1000 * 60 * 60 * 1;
+// Re-crawl timer : 600 seconds
+config.crawler.timer = 600000;
+config.crawler.limit = 1000 * 60 * 60 * 24;
 
 config.HN = {};
 

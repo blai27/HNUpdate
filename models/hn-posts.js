@@ -1,3 +1,5 @@
+var configs = require('../config.js');
+
 var mongoClient = require('mongodb').MongoClient;
 var HNPosts = {};
 var db_url = 'mongodb://localhost:27017/hn-posts';
@@ -18,9 +20,6 @@ function insertPostBatch(db, batch, callback) {
   instance.posts = batch.posts;
 
   collection.insert(instance, function(err, result) {
-    if (err === null) {
-      console.log('insert completed.');
-    }
     callback(result);
   });
 }
@@ -36,6 +35,15 @@ function getRange(db, callback) {
   });
 }
 
+function removePostBatches(db, currTime, callback) {
+  var collection = db.collection('hn-posts');
+  var evictTime = new Date(currTime.getTime() - configs.crawler.limit);
+  collection.remove({from_time: {$lt: evictTime}}, function(err, result) {
+
+    callback(err, result);
+  });
+}
+
 function updateRange(db, range, callback) {
   var collection = db.collection('hn-posts-stats');
   collection.find().toArray(function(err, docs) {
@@ -44,7 +52,6 @@ function updateRange(db, range, callback) {
       instance.max = range.max;
       instance.min = range.min;
       collection.insert(instance, function(err, result) {
-        console.log('range inserted');
       });
     } else {
       var range_stored = docs[0];
@@ -93,10 +100,18 @@ HNPosts.getIndexRange = function(fn) {
 
 HNPosts.updateIndexRange = function(range, fn) {
   mongoClient.connect(db_url, function(err, db) {
-    console.log('range connected');
     updateRange(db, range, function(err, result) {
       db.close();
       fn(err, result);
+    });
+  });
+}
+
+HNPosts.removeOldBatches = function(currTime, fn) {
+  mongoClient.connect(db_url, function(err, db) {
+    removePostBatches(db, currTime, function(error, result) {
+      db.close();
+      fn(error, result);
     });
   });
 }

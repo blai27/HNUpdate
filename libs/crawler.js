@@ -58,14 +58,13 @@ crawler.crawl = function(id, fn) {
       var result = JSON.parse(data);
       that.batch.currentMin = id;
       that.parse(result, id);
-      var creation = new Date(result['time'] * 1000);
       var startTime = new Date(that.startTime.getTime() - that.limit);
-      if (startTime > creation) {
+      if (startTime > result['time']) {
         that.crawl(that.lastMax, fn);
       } else {
         setTimeout(function() {
           that.crawl(id-1, fn);
-        }, 1000);
+        }, 100);
       }
     });
   } else {
@@ -73,12 +72,12 @@ crawler.crawl = function(id, fn) {
     if (that.batch.posts.length > 0) {
       that.batch.min = that.batch.currentMin;
       model.createBatch(that.batch, function() {
-        console.log('batch created');
         var range = {};
         range.max = that.batch.max;
         range.min = that.batch.min;
         model.updateIndexRange(range, function() {
-
+          model.removeOldBatches(new Date(), function() {
+          });
         });
       });
     }
@@ -92,11 +91,11 @@ crawler.parse = function(item, id) {
     this.batch.posts.push(item);
     return;
   }
-
+  item['time'] = new Date(item['time'] * 1000);
   if (this.batch.max === id) {
     this.batch.maxtime = item['time'];
   }
-  this.batch.mintime = item['item'];
+  this.batch.mintime = item['time'];
 
   if (item['type'] === 'story') {
     if (item['title'] !== undefined) {
