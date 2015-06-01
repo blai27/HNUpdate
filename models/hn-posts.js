@@ -37,10 +37,12 @@ function getRange(db, callback) {
 
 function removePostBatches(db, currTime, callback) {
   var collection = db.collection('hn-posts');
+  var collection_stats = db.collection('hn-posts-stats');
   var evictTime = new Date(currTime.getTime() - configs.crawler.limit);
   collection.remove({from_time: {$lt: evictTime}}, function(err, result) {
-
-    callback(err, result);
+    collection_stats.remove({}, function(error, result) {
+      callback(error, result);
+    });
   });
 }
 

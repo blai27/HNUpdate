@@ -5,7 +5,7 @@ config.crawler = {};
 
 // Re-crawl timer : 600 seconds
 config.crawler.timer = 600000;
-config.crawler.limit = 1000 * 60 * 60 * 24;
+config.crawler.limit = 1000 * 60 * 60 * 2;
 
 config.HN = {};
 

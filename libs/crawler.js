@@ -56,6 +56,12 @@ crawler.crawl = function(id, fn) {
     hnapi.getItem(id, function(data){
       console.log("Retrieved post: " + id);
       var result = JSON.parse(data);
+      if (result === null) {
+        setTimeout(function() {
+          that.crawl(id-1, fn);
+        }, 100);
+        return;
+      }
       that.batch.currentMin = id;
       that.parse(result, id);
       var startTime = new Date(that.startTime.getTime() - that.limit);
@@ -75,8 +81,9 @@ crawler.crawl = function(id, fn) {
         var range = {};
         range.max = that.batch.max;
         range.min = that.batch.min;
-        model.updateIndexRange(range, function() {
-          model.removeOldBatches(new Date(), function() {
+        model.removeOldBatches(new Date(), function() {
+          model.updateIndexRange(range, function() {
+            
           });
         });
       });
@@ -86,7 +93,10 @@ crawler.crawl = function(id, fn) {
 }
 
 crawler.parse = function(item, id) {
-
+  if (item === null) {
+    this.batch.posts.push(item);
+    return;
+  }
   if (item['error'] !== undefined && item['error'] === 'Permission denied') {
     this.batch.posts.push(item);
     return;
