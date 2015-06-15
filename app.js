@@ -2,6 +2,7 @@ var express = require('express');
 var configs = require('./config.js');
 var hnapi = require('./libs/hnapi.js');
 var background = require('./libs/background.js');
+var model = require('./models/hn-posts.js');
 
 var app = express();
 
@@ -14,7 +15,7 @@ app.get('/', function(req, res) {
   res.sendfile(__dirname + '/views/index.html');
 });
 
-app.get('/maxID', function(req, res) {
+app.get('/hour', function(req, res) {
   var response = res;
   hnapi.getMaxItem(function(data) {
     hnapi.getItem(data, function(resp) {

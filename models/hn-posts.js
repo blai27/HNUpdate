@@ -2,25 +2,12 @@ var configs = require('../config.js');
 
 var mongoClient = require('mongodb').MongoClient;
 var HNPosts = {};
-var db_url = 'mongodb://localhost:27017/hn-posts';
+var db_url = configs.mongo.url;
 
-function insertPostBatch(db, batch, callback) {
-
+function insertPostItem(db, item, callback) {
   var collection = db.collection('hn-posts');
-  var instance = {};
-  instance.from = batch.max;
-  instance.to = batch.min;
-  instance.from_time = batch.maxtime;
-  instance.to_time = batch.mintime;
-  instance.asks = batch.asks;
-  instance.stories = batch.stories;
-  instance.shows = batch.shows;
-  instance.jobs = batch.jobs;
-  instance.comments = batch.comments;
-  instance.posts = batch.posts;
-
-  collection.insert(instance, function(err, result) {
-    callback(result);
+  collection.insert(item, function(err, result) {
+    callback(err, result);
   });
 }
 
@@ -39,7 +26,7 @@ function removePostBatches(db, currTime, callback) {
   var collection = db.collection('hn-posts');
   var collection_stats = db.collection('hn-posts-stats');
   var evictTime = new Date(currTime.getTime() - configs.crawler.limit);
-  collection.remove({from_time: {$lt: evictTime}}, function(err, result) {
+  collection.remove({time: {$lt: evictTime}}, function(err, result) {
     collection_stats.remove({}, function(error, result) {
       callback(error, result);
     });
@@ -75,13 +62,22 @@ function updateRange(db, range, callback) {
   });
 }
 
-HNPosts.createBatch = function(batch, fn) {
+function getHourly(db, callback) {
+  var collection = db.collection('hn-posts');
+  var currTime = new Date();
+  var criteria = {};
+  collection.find().toArray(function(err, docs) {
+    callback(err, docs);
+  });
+}
+
+HNPosts.createItem = function(item, fn) {
   mongoClient.connect(db_url, function(err, db) {
     if (err !== null) {
       console.log("Connection to db failed.");
       fn(err, null);
     }
-    insertPostBatch(db, batch, function(result) {
+    insertPostItem(db, item, function(result) {
       db.close();
       fn();
     });
@@ -112,6 +108,15 @@ HNPosts.updateIndexRange = function(range, fn) {
 HNPosts.removeOldBatches = function(currTime, fn) {
   mongoClient.connect(db_url, function(err, db) {
     removePostBatches(db, currTime, function(error, result) {
+      db.close();
+      fn(error, result);
+    });
+  });
+}
+
+HNPosts.getHourlyPosts = function(fn) {
+  mongoClient.connect(db_url, function(err, db) {
+    getHourly(db, function(error, result) {
       db.close();
       fn(error, result);
     });
