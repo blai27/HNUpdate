@@ -17,11 +17,9 @@ app.get('/', function(req, res) {
 
 app.get('/hour', function(req, res) {
   var response = res;
-  hnapi.getMaxItem(function(data) {
-    hnapi.getItem(data, function(resp) {
-      response.json(resp);
-    });
-  })
+  model.getHourlyPosts(function(err, docs) {
+    response.send(docs);
+  });
 });
 
 background.start();

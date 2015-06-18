@@ -51,7 +51,7 @@ crawler.insert = function(item, fn) {
 crawler.complete = function(fn) {
   console.log("HN API Background Job: Batch Completed");
   var that = this;
-  model.removeOldBatches(new Date(), function() {
+  model.removeOldBatches(that.startTime, function() {
     var new_range = {};
     if (that.range) {
       new_range.max = that.currMax;

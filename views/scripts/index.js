@@ -3,7 +3,7 @@
 
   $('#getMaxID').click(function() {
     $.ajax({
-      url: '/Stats',
+      url: '/hour',
       type: 'GET',
       dataType: 'json',
       timeout: 5000,

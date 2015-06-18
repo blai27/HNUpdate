@@ -65,8 +65,9 @@ function updateRange(db, range, callback) {
 function getHourly(db, callback) {
   var collection = db.collection('hn-posts');
   var currTime = new Date();
-  var criteria = {};
-  collection.find().toArray(function(err, docs) {
+  var minusHour = new Date(currTime.getTime() - 1000 * 60 * 60 * 1);
+  var criteria = {time: {$gt: minusHour}};
+  collection.find(criteria).toArray(function(err, docs) {
     callback(err, docs);
   });
 }
