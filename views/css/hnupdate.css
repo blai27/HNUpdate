@@ -1,6 +1,6 @@
 .panel {
   width: 70%;
-  margin: 0 auto 0 auto;
+  margin: 50px auto 0 auto;
 }
 
 .panel-default {
@@ -11,4 +11,26 @@
   color: #4b0082;
   background-color: #c3a0cb;
   border-color: #c3a0cb;
+}
+
+hr {
+  width: 70%;
+}
+
+.fa-github:hover {
+  color: #4b0082;
+  cursor: pointer;
+}
+
+.footer {
+  text-align: center;
+  margin: 0 auto;
+}
+
+a {
+  color: black;
+}
+
+.copyright {
+  margin-top: 10px;
 }
