@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../css/options.css">
-    <script type="text/javascript" src="../js/jquery-1.11.1.js"></script>
-    <script type="text/javascript" src="../js/bootstrap.js"></script> -->
-    <title>Hacker News Update Tool</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/hnupdate.css">
+    <title>Hacker News Update</title>
   </head>
   <body>
-    <button id="getMaxID">Hi</button>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Hacker News Update
+        </h3>
+      </div>
+      <div class="panel-body">
+        <p>This tool will allow you to view all Hacker News posts since a prior time with some filter options.
+        </p>
+        <p>Default option: Show all posts within the last 24 hours.
+        </p>
+        <button class="btn btn-default" id="getMaxID">Request</button>
+      </div>
+    </div>
     <script type="text/javascript" src="scripts/jquery-1.11.1.js"></script>
     <script type="text/javascript" src="scripts/index.js"></script>
   </body>

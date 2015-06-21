@@ -1,0 +1,14 @@
+.panel {
+  width: 70%;
+  margin: 0 auto 0 auto;
+}
+
+.panel-default {
+  border-color: #c3a0cb;
+}
+
+.panel-default > .panel-heading {
+  color: #4b0082;
+  background-color: #c3a0cb;
+  border-color: #c3a0cb;
+}
