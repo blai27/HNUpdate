@@ -35,3 +35,11 @@ a {
 .copyright {
   margin-top: 10px;
 }
+
+.options-main {
+  margin-bottom: 10px;
+}
+
+.select-handle {
+  width: 100px;
+}
