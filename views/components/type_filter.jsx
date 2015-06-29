@@ -10,14 +10,18 @@ var TypeFilter = React.createClass({
   },
   render: function() {
     return (
-      <div>
-        <span>Post type: </span>
-        <select className="select-handle form-control" onChange={this.selectChange} value={this.state.value}>
-          <option value="all">All Posts</option>
-          <option value="ask">Ask HNs</option>
-          <option value="show">Show HNs</option>
-          <option value="job">Jobs</option>
-        </select>
+      <div className="form-horizontal">
+        <div className="form-group">
+          <span className="col-sm-4 control-label font-other">Post Type: </span>
+          <div className="col-sm-6 col-sm-offset-2">
+            <select className="select-handle form-control" onChange={this.selectChange} value={this.state.value}>
+              <option value="all">All Posts</option>
+              <option value="ask">Ask HNs</option>
+              <option value="show">Show HNs</option>
+              <option value="job">Jobs</option>
+            </select>
+          </div>
+        </div>
       </div>
     );
   }

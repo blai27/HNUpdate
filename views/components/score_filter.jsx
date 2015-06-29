@@ -10,9 +10,13 @@ var ScoreFilter = React.createClass({
   },
   render: function() {
     return (
-      <div>
-        <span>Minimum Score: </span>
-        <input className="form-control select-handle" onChange={this.onValueChange} type="number" defaultValue={this.state.value} />
+      <div className="form-horizontal">
+        <div className="form-group">
+          <span className="col-sm-4 control-label font-other">Minimum Score: </span>
+          <div className="col-sm-6 col-sm-offset-2">
+            <input className="form-control select-handle" onChange={this.onValueChange} type="number" defaultValue={this.state.value} />
+          </div>
+        </div>
       </div>
     );
   }
